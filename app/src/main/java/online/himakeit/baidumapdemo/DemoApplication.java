@@ -5,7 +5,13 @@ import android.app.Application;
 import com.baidu.mapapi.CoordType;
 import com.baidu.mapapi.SDKInitializer;
 
-
+/**
+ * @author：LiXueLong
+ * @date:2018/2/28-15:25
+ * @mail1：skylarklxlong@outlook.com
+ * @mail2：li_xuelong@126.com
+ * @des：DemoApplication
+ */
 public class DemoApplication extends Application {
 
     @Override

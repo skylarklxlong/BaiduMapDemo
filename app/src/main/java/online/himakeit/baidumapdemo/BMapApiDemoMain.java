@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,10 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
 import com.baidu.mapapi.SDKInitializer;
 import com.baidu.mapapi.VersionInfo;
 
@@ -58,7 +62,7 @@ import online.himakeit.baidumapdemo.util.OpenBaiduMap;
  * @mail2：li_xuelong@126.com
  * @des：BMapApiDemoMain
  */
-public class BMapApiDemoMain extends Activity {
+public class BMapApiDemoMain extends AppCompatActivity {
     private static final String LTAG = BMapApiDemoMain.class.getSimpleName();
 
     /**
@@ -75,7 +79,7 @@ public class BMapApiDemoMain extends Activity {
             if (s.equals(SDKInitializer.SDK_BROADTCAST_ACTION_STRING_PERMISSION_CHECK_ERROR)) {
                 text.setText("key 验证出错! 错误码 :" + intent.getIntExtra
                         (SDKInitializer.SDK_BROADTCAST_INTENT_EXTRA_INFO_KEY_ERROR_CODE, 0)
-                        +  " ; 请在 AndroidManifest.xml 文件中检查 key 设置");
+                        + " ; 请在 AndroidManifest.xml 文件中检查 key 设置");
             } else if (s.equals(SDKInitializer.SDK_BROADTCAST_ACTION_STRING_PERMISSION_CHECK_OK)) {
                 text.setText("key 验证成功! 功能可以正常使用");
                 text.setTextColor(Color.YELLOW);
@@ -86,6 +90,13 @@ public class BMapApiDemoMain extends Activity {
     }
 
     private SDKReceiver mReceiver;
+
+    public static LocationService locationService;
+    public static String locationStr;
+    public static double latitude;     // 纬度
+    public static double lontitude;    // 经度
+    public static String city;
+    public static String province;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -132,49 +143,52 @@ public class BMapApiDemoMain extends Activity {
                     R.string.demo_desc_multimap, MultiMapViewDemo.class),
             new DemoInfo(R.string.demo_title_control,
                     R.string.demo_desc_control, MapControlDemo.class),
-            new DemoInfo(R.string.demo_title_ui, R.string.demo_desc_ui,
-                    UISettingDemo.class),
+            new DemoInfo(R.string.demo_title_ui,
+                    R.string.demo_desc_ui, UISettingDemo.class),
             new DemoInfo(R.string.demo_title_location,
                     R.string.demo_desc_location, LocationDemo.class),
             new DemoInfo(R.string.demo_title_geometry,
                     R.string.demo_desc_geometry, GeometryDemo.class),
             new DemoInfo(R.string.demo_title_overlay,
                     R.string.demo_desc_overlay, OverlayDemo.class),
-            new DemoInfo(R.string.demo_title_heatmap, R.string.demo_desc_heatmap,
-                    HeatMapDemo.class),
+            new DemoInfo(R.string.demo_title_heatmap,
+                    R.string.demo_desc_heatmap, HeatMapDemo.class),
             new DemoInfo(R.string.demo_title_geocode,
                     R.string.demo_desc_geocode, GeoCoderDemo.class),
-            new DemoInfo(R.string.demo_title_poi, R.string.demo_desc_poi,
-                    PoiSearchDemo.class),
-            new DemoInfo(R.string.demo_title_route, R.string.demo_desc_route,
-                    RoutePlanDemo.class),
+            new DemoInfo(R.string.demo_title_poi,
+                    R.string.demo_desc_poi, PoiSearchDemo.class),
+            new DemoInfo(R.string.demo_title_route,
+                    R.string.demo_desc_route, RoutePlanDemo.class),
             new DemoInfo(R.string.demo_title_districsearch,
-                    R.string.demo_desc_districsearch,
-                    DistrictSearchDemo.class),
-            new DemoInfo(R.string.demo_title_bus, R.string.demo_desc_bus,
-                    BusLineSearchDemo.class),
-            new DemoInfo(R.string.demo_title_share, R.string.demo_desc_share,
-                    ShareDemo.class),
+                    R.string.demo_desc_districsearch, DistrictSearchDemo.class),
+            new DemoInfo(R.string.demo_title_bus,
+                    R.string.demo_desc_bus, BusLineSearchDemo.class),
+            new DemoInfo(R.string.demo_title_share,
+                    R.string.demo_desc_share, ShareDemo.class),
             new DemoInfo(R.string.demo_title_offline,
                     R.string.demo_desc_offline, OfflineDemo.class),
             new DemoInfo(R.string.demo_title_radar,
                     R.string.demo_desc_radar, RadarDemo.class),
-            new DemoInfo(R.string.demo_title_open_baidumap, R.string.demo_desc_open_baidumap,
-                    OpenBaiduMap.class),
+            new DemoInfo(R.string.demo_title_open_baidumap,
+                    R.string.demo_desc_open_baidumap, OpenBaiduMap.class),
             new DemoInfo(R.string.demo_title_favorite,
                     R.string.demo_desc_favorite, FavoriteDemo.class),
-            new DemoInfo(R.string.demo_title_cloud, R.string.demo_desc_cloud,
-                    CloudSearchDemo.class),
-            new DemoInfo(R.string.demo_title_opengl, R.string.demo_desc_opengl,
-                    OpenglDemo.class),
-            new DemoInfo(R.string.demo_title_cluster, R.string.demo_desc_cluster, MarkerClusterDemo.class),
-            new DemoInfo(R.string.demo_title_tileoverlay, R.string.demo_desc_tileoverlay,
-                    TileOverlayDemo.class),
-            new DemoInfo(R.string.demo_desc_texturemapview, R.string.demo_desc_texturemapview,
-                    TextureMapViewDemo.class),
-            new DemoInfo(R.string.demo_title_indoor, R.string.demo_desc_indoor, IndoorMapDemo.class),
-            new DemoInfo(R.string.demo_title_indoorsearch, R.string.demo_desc_indoorsearch, IndoorSearchDemo.class),
-            new DemoInfo(R.string.demo_track_show, R.string.demo_desc_track_show, TrackShowDemo.class)
+            new DemoInfo(R.string.demo_title_cloud,
+                    R.string.demo_desc_cloud, CloudSearchDemo.class),
+            new DemoInfo(R.string.demo_title_opengl,
+                    R.string.demo_desc_opengl, OpenglDemo.class),
+            new DemoInfo(R.string.demo_title_cluster,
+                    R.string.demo_desc_cluster, MarkerClusterDemo.class),
+            new DemoInfo(R.string.demo_title_tileoverlay,
+                    R.string.demo_desc_tileoverlay, TileOverlayDemo.class),
+            new DemoInfo(R.string.demo_desc_texturemapview,
+                    R.string.demo_desc_texturemapview, TextureMapViewDemo.class),
+            new DemoInfo(R.string.demo_title_indoor,
+                    R.string.demo_desc_indoor, IndoorMapDemo.class),
+            new DemoInfo(R.string.demo_title_indoorsearch,
+                    R.string.demo_desc_indoorsearch, IndoorSearchDemo.class),
+            new DemoInfo(R.string.demo_track_show,
+                    R.string.demo_desc_track_show, TrackShowDemo.class)
     };
 
     @Override
@@ -183,11 +197,54 @@ public class BMapApiDemoMain extends Activity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+        locationService = new LocationService(getApplicationContext());
+        locationService.registerListener(mListener);
+        locationService.setLocationOption(locationService.getDefaultLocationClientOption());
+        locationService.start();// 定位SDK
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         // 取消监听 SDK 广播
         unregisterReceiver(mReceiver);
     }
+
+    private BDLocationListener mListener = new BDLocationListener() {
+
+        @Override
+        public void onReceiveLocation(BDLocation location) {
+            if (null != location && location.getLocType() != BDLocation.TypeServerError) {
+                StringBuffer sb = new StringBuffer(256);
+
+                sb.append("latitude : ");// 纬度
+                sb.append(location.getLatitude());
+                latitude = location.getLatitude();
+
+                sb.append("\nlontitude : ");// 经度
+                sb.append(location.getLongitude());
+                lontitude = location.getLongitude();
+
+                sb.append("\nCity : ");   //所在城市
+                sb.append(location.getCity());
+                city = location.getCity();
+                province = location.getProvince();
+
+                sb.append("\naddr : ");// 地址信息
+                sb.append(location.getAddrStr());
+                locationStr = sb.toString();
+
+                Toast.makeText(BMapApiDemoMain.this, locationStr, Toast.LENGTH_LONG).show();
+
+                locationService.unregisterListener(mListener); //注销掉监听
+                locationService.stop(); //停止定位服务
+            }
+        }
+
+    };
 
     private class DemoListAdapter extends BaseAdapter {
         public DemoListAdapter() {
@@ -230,7 +287,7 @@ public class BMapApiDemoMain extends Activity {
         private final Class<? extends Activity> demoClass;
 
         public DemoInfo(int title, int desc,
-                Class<? extends Activity> demoClass) {
+                        Class<? extends Activity> demoClass) {
             this.title = title;
             this.desc = desc;
             this.demoClass = demoClass;
