@@ -3,6 +3,7 @@ package online.himakeit.baidumapdemo;
 import android.content.Context;
 
 import com.baidu.location.BDLocationListener;
+import com.baidu.location.BDNotifyListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.location.LocationClientOption.LocationMode;
@@ -53,6 +54,21 @@ public class LocationService {
         }
     }
 
+    public boolean registerNotify(BDNotifyListener listener) {
+        boolean isSuccess = false;
+        if (listener != null) {
+            client.registerNotify(listener);
+            isSuccess = true;
+        }
+        return isSuccess;
+    }
+
+    public void removeNotifyEvent(BDNotifyListener listener) {
+        if (listener != null) {
+            client.removeNotifyEvent(listener);
+        }
+    }
+
     /***
      *
      * @param option
@@ -61,7 +77,7 @@ public class LocationService {
     public boolean setLocationOption(LocationClientOption option) {
         boolean isSuccess = false;
         if (option != null) {
-            if (client.isStarted()){
+            if (client.isStarted()) {
                 client.stop();
             }
             DIYoption = option;
@@ -145,7 +161,7 @@ public class LocationService {
              * 可选，7.2版本新增能力
              * 如果设置了该接口，首次启动定位时，会先判断当前WiFi是否超出有效期，若超出有效期，会先重新扫描WiFi，然后定位
              */
-            mOption.setWifiCacheTimeOut(5*60*1000);
+            mOption.setWifiCacheTimeOut(5 * 60 * 1000);
             /**
              * 可选，设置是否需要过滤GPS仿真结果，默认需要，即参数为false
              */

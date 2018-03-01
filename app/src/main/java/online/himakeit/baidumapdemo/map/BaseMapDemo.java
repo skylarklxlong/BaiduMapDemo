@@ -23,7 +23,11 @@ import java.io.InputStream;
 
 
 /**
- * 演示MapView的基本用法
+ * @author：LiXueLong
+ * @date:2018/3/1-11:49
+ * @mail1：skylarklxlong@outlook.com
+ * @mail2：li_xuelong@126.com
+ * @des：BaseMapDemo演示MapView的基本用法
  */
 public class BaseMapDemo extends Activity {
 
@@ -34,9 +38,11 @@ public class BaseMapDemo extends Activity {
     private boolean mEnableCustomStyle = true;
     private static final int OPEN_ID = 0;
     private static final int CLOSE_ID = 1;
-    //用于设置个性化地图的样式文件
-    // 精简为1套样式模板:
-    // "custom_config_dark.json"
+    /**
+     * 用于设置个性化地图的样式文件
+     * 精简为1套样式模板:
+     * "custom_config_dark.json"
+     */
     private static String PATH = "custom_config_dark.json";
 
     @Override
@@ -44,8 +50,14 @@ public class BaseMapDemo extends Activity {
         super.onCreate(savedInstanceState);
 
         MapStatus.Builder builder = new MapStatus.Builder();
-        LatLng center = new LatLng(39.915071, 116.403907); // 默认 天安门
-        float zoom = 11.0f; // 默认 11级
+        /**
+         * 默认 天安门
+         */
+        LatLng center = new LatLng(39.915071, 116.403907);
+        /**
+         * 默认 11级
+         */
+        float zoom = 11.0f;
         Intent intent = getIntent();
         if (null != intent) {
             mEnableCustomStyle = intent.getBooleanExtra("customStyle", true);
@@ -73,7 +85,11 @@ public class BaseMapDemo extends Activity {
         MapView.setMapCustomEnable(true);
     }
 
-    // 初始化View
+    /**
+     * 初始化View
+     *
+     * @param context
+     */
     private void initView(Context context) {
         layout = new FrameLayout(this);
         layout.addView(mMapView);
@@ -115,7 +131,15 @@ public class BaseMapDemo extends Activity {
         });
     }
 
-    // 设置个性化地图config文件路径
+    /**
+     * 设置个性化地图config文件路径
+     * 一定要在MapView(TextureMapView)创建之前调用，
+     * 如果是setContentView方法通过布局加载MapView(TextureMapView), 那么一定要放置在
+     * MapView.setCustomMapStylePath方法之后执行，否则个性化地图不会显示
+     *
+     * @param context
+     * @param PATH
+     */
     private void setMapCustomFile(Context context, String PATH) {
         FileOutputStream out = null;
         InputStream inputStream = null;

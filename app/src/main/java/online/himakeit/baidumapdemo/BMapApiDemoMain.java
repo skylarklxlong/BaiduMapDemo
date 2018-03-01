@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
+import com.baidu.location.BDNotifyListener;
 import com.baidu.mapapi.SDKInitializer;
 import com.baidu.mapapi.VersionInfo;
 
@@ -202,6 +203,8 @@ public class BMapApiDemoMain extends AppCompatActivity {
 
         locationService = new LocationService(getApplicationContext());
         locationService.registerListener(mListener);
+        locationService.registerNotify(notifyListener);
+        notifyListener.SetNotifyLocation(30.429502f, 114.469785f, 3000, locationService.getDefaultLocationClientOption().getCoorType());
         locationService.setLocationOption(locationService.getDefaultLocationClientOption());
         locationService.start();// 定位SDK
     }
@@ -213,6 +216,21 @@ public class BMapApiDemoMain extends AppCompatActivity {
         unregisterReceiver(mReceiver);
     }
 
+    /**
+     * 位置提醒
+     */
+    private BDNotifyListener notifyListener = new BDNotifyListener() {
+        @Override
+        public void onNotify(BDLocation bdLocation, float v) {
+            Log.e(LTAG, "到达目的地：武汉市江夏区富五路");
+            Toast.makeText(BMapApiDemoMain.this, "到达目的地：武汉市江夏区富五路", Toast.LENGTH_SHORT).show();
+            locationService.removeNotifyEvent(notifyListener);
+        }
+    };
+
+    /**
+     * 监听位置
+     */
     private BDLocationListener mListener = new BDLocationListener() {
 
         @Override
@@ -237,7 +255,8 @@ public class BMapApiDemoMain extends AppCompatActivity {
                 sb.append(location.getAddrStr());
                 locationStr = sb.toString();
 
-                Toast.makeText(BMapApiDemoMain.this, locationStr, Toast.LENGTH_LONG).show();
+                Toast.makeText(BMapApiDemoMain.this, locationStr, Toast.LENGTH_SHORT).show();
+                Log.e(LTAG, "locationStr" + locationStr);
 
                 locationService.unregisterListener(mListener); //注销掉监听
                 locationService.stop(); //停止定位服务
