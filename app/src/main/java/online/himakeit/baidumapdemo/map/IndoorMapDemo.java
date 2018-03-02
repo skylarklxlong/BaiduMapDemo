@@ -36,6 +36,7 @@ import com.baidu.mapapi.search.route.WalkingRouteResult;
 import online.himakeit.baidumapdemo.R;
 import online.himakeit.baidumapdemo.indoorview.BaseStripAdapter;
 import online.himakeit.baidumapdemo.indoorview.StripListView;
+
 /**
  * @author：LiXueLong
  * @date:2018/2/28-14:06
@@ -57,9 +58,18 @@ public class IndoorMapDemo extends Activity implements OnGetRoutePlanResultListe
     IndoorRouteLine mIndoorRouteline;
     IndoorRouteOverlay mIndoorRoutelineOverlay = null;
     int nodeIndex = -1;
-    private TextView popupText = null; // 泡泡view
-    Button mBtnPre = null; // 上一个节点
-    Button mBtnNext = null; // 下一个节点
+    /**
+     * 泡泡view
+     */
+    private TextView popupText = null;
+    /**
+     * 上一个节点
+     */
+    Button mBtnPre = null;
+    /**
+     * 下一个节点
+     */
+    Button mBtnNext = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -74,7 +84,10 @@ public class IndoorMapDemo extends Activity implements OnGetRoutePlanResultListe
         mMapView = (MapView) mainview.findViewById(R.id.bmapView);
         mBaiduMap = mMapView.getMap();
 
-        LatLng centerpos = new LatLng(39.916958, 116.379278); // 西单大悦城
+        /**
+         * 西单大悦城
+         */
+        LatLng centerpos = new LatLng(39.916958, 116.379278);
         MapStatus.Builder builder = new MapStatus.Builder();
         builder.target(centerpos).zoom(19.0f);
         mBaiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
@@ -84,10 +97,12 @@ public class IndoorMapDemo extends Activity implements OnGetRoutePlanResultListe
         mSearch.setOnGetRoutePlanResultListener(this);
 
         indoorRoutePlane = (Button) mainview.findViewById(R.id.indoorRoutePlane);
-        indoorRoutePlane.setOnClickListener( new View.OnClickListener() {
+        indoorRoutePlane.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 发起室内路线规划检索
+                /**
+                 * 发起室内路线规划检索
+                 */
                 IndoorPlanNode startNode = new IndoorPlanNode(new LatLng(39.917380, 116.37978), "F1");
                 IndoorPlanNode endNode = new IndoorPlanNode(new LatLng(39.917239, 116.37955), "F6");
                 IndoorRoutePlanOption irpo = new IndoorRoutePlanOption().from(startNode).to(endNode);
@@ -99,7 +114,7 @@ public class IndoorMapDemo extends Activity implements OnGetRoutePlanResultListe
         isIndoorBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-             if (!isIndoor) {
+                if (!isIndoor) {
                     EnableIndoorMap();
                 } else {
                     DisableIndoorMap();
@@ -109,7 +124,7 @@ public class IndoorMapDemo extends Activity implements OnGetRoutePlanResultListe
         });
 
         stripListView = new StripListView(this);
-        layout.addView( stripListView );
+        layout.addView(stripListView);
         setContentView(layout);
         mFloorListAdapter = new BaseStripAdapter(IndoorMapDemo.this);
 
@@ -121,7 +136,7 @@ public class IndoorMapDemo extends Activity implements OnGetRoutePlanResultListe
                     stripListView.setVisibility(View.INVISIBLE);
                     return;
                 }
-                mFloorListAdapter.setmFloorList( mapBaseIndoorMapInfo.getFloors());
+                mFloorListAdapter.setmFloorList(mapBaseIndoorMapInfo.getFloors());
                 stripListView.setVisibility(View.VISIBLE);
                 stripListView.setStripAdapter(mFloorListAdapter);
                 mMapBaseIndoorMapInfo = mapBaseIndoorMapInfo;
@@ -261,8 +276,8 @@ public class IndoorMapDemo extends Activity implements OnGetRoutePlanResultListe
             mBaiduMap.switchBaseIndoorMapFloor(step.getFloorId(), mMapBaseIndoorMapInfo.getID());
 //        mFloorListAdapter.setSelectedPostion();
             mFloorListAdapter.notifyDataSetInvalidated();
-        }else{
-            Toast.makeText(IndoorMapDemo.this,"请打开室内图或将室内图移入屏幕内", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(IndoorMapDemo.this, "请打开室内图或将室内图移入屏幕内", Toast.LENGTH_SHORT).show();
         }
     }
 

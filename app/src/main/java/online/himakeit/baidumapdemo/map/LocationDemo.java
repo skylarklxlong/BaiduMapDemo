@@ -49,7 +49,13 @@ public class LocationDemo extends AppCompatActivity implements SensorEventListen
     public MyLocationListenner myListener = new MyLocationListenner();
     private LocationMode mCurrentMode;
     BitmapDescriptor mCurrentMarker;
+    /**
+     * 自定义精度圈填充颜色
+     */
     private static final int accuracyCircleFillColor = 0xAAFFFF88;
+    /**
+     * 自定义精度圈边框颜色
+     */
     private static final int accuracyCircleStrokeColor = 0xAA00FF00;
     private SensorManager mSensorManager;
     private Double lastX = 0.0;
@@ -136,6 +142,11 @@ public class LocationDemo extends AppCompatActivity implements SensorEventListen
                      */
                     mCurrentMarker = BitmapDescriptorFactory
                             .fromResource(R.drawable.icon_geo);
+                    /**
+                     * MyLocationConfiguration(LocationMode mode,boolean enableDirection,
+                     * BitmapDescriptor customMarker,int accuracyCircleFillColor,int accuracyCircleStrokeColor)
+                     * 设置定位的属性，包括定位模式、是否开启方向、设置自定义定位图标、精度圈填充颜色，精度圈边框颜色
+                     */
                     mBaiduMap.setMyLocationConfiguration(new MyLocationConfiguration(
                             mCurrentMode, true, mCurrentMarker,
                             accuracyCircleFillColor, accuracyCircleStrokeColor));

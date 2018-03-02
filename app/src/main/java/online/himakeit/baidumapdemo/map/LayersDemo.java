@@ -16,10 +16,7 @@ import online.himakeit.baidumapdemo.R;
  * @date:2018/2/28-14:07
  * @mail1：skylarklxlong@outlook.com
  * @mail2：li_xuelong@126.com
- * @des：LayersDemo
- */
-/**
- * 演示地图图层显示的控制方法
+ * @des：LayersDemo演示地图图层显示的控制方法
  */
 public class LayersDemo extends Activity {
 
